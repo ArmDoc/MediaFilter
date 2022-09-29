@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\MediaFilterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -15,5 +16,11 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    return $request->user();
+	return $request->user();
+});
+
+Route::prefix('filter')->group(function () {
+	Route::post('photo', [MediaFilterController::class, 'detectPhoto']);
+	Route::post('video', [MediaFilterController::class, 'detectVideo']);
+	Route::post('text', [MediaFilterController::class, 'detectText']);
 });
