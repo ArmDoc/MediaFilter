@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\MediaFilterController;
+use App\Mail\FiltrationCompleted;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -24,3 +25,5 @@ Route::prefix('filter')->group(function () {
 	Route::post('video', [MediaFilterController::class, 'detectVideo']);
 	Route::post('text', [MediaFilterController::class, 'detectText']);
 });
+
+// Route::get('send', 'FiltrationCompleted@build');

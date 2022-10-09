@@ -16,16 +16,19 @@ class FilterMediaEvent
 {
 	use Dispatchable, InteractsWithSockets, SerializesModels;
 
+	public $result;
+
 	/**
 	 * Create a new event instance.
 	 *
 	 * @return void
 	 */
+
 	public function __construct($path, $type, $status, $reason = '')
 	{
 		@unlink($path);
 
-		Result::create([
+		$this->result = Result::create([
 			'type'			=> $type,
 			'status'			=> $status,
 			'reason'			=> $reason,

@@ -3,10 +3,13 @@
 namespace App\Providers;
 
 use App\Events\FilterMediaEvent;
+use App\Events\MailSendEvent;
+use App\Listeners\MailSendEventListener;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\Listeners\SendEmailVerificationNotification;
 use Illuminate\Foundation\Support\Providers\EventServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Event;
+use Illuminate\Support\Facades\Mail;
 
 class EventServiceProvider extends ServiceProvider
 {
@@ -21,7 +24,7 @@ class EventServiceProvider extends ServiceProvider
         ],
 
 		  FilterMediaEvent::class => [
-				// urish ivent vor kmshaki sranic stacacy 
+				MailSendEventListener::class,
 		  ]
     ];
 

@@ -14,10 +14,9 @@ class Sightengine implements INSFWDetect
 	protected $model;
 	protected $path;
 
-	public function __construct($config = [], $path)
+	public function __construct($config = [])
 	{
 		$this->config = $config;
-		$this->path	= $path;
 	}
 
 	public function detectPhoto($path)
