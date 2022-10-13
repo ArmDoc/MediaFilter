@@ -25,5 +25,3 @@ Route::prefix('filter')->group(function () {
 	Route::post('video', [MediaFilterController::class, 'detectVideo']);
 	Route::post('text', [MediaFilterController::class, 'detectText']);
 });
-
-// Route::get('send', 'FiltrationCompleted@build');

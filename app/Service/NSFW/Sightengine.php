@@ -5,6 +5,8 @@ namespace App\Service\NSFW;
 use App\Contracts\INSFWDetect;
 use App\Events\FilterMediaEvent;
 use App\Facades\NSFW;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 
 /** @package App\Service\NSFW */
 class Sightengine implements INSFWDetect
@@ -17,12 +19,20 @@ class Sightengine implements INSFWDetect
 	public function __construct($config = [])
 	{
 		$this->config = $config;
+		$this->client = new Client(['base_uri' => 'https://api.sightengine.com/1.0/']);
 	}
 
 	public function detectPhoto($path)
 	{
-		$params = $this->config;
-		$params['media'] = new \CurlFile($path);
+		$params = [
+			'query' => $this->config,
+			'multipart' => [
+				[
+					'name'     => 'media',
+					'contents' => fopen($path, 'r'),
+				],
+			]
+		];
 
 		$output = $this->sendRequest('check.json', $params);
 
@@ -46,8 +56,15 @@ class Sightengine implements INSFWDetect
 
 	public function detectVideo($path)
 	{
-		$params = $this->config;
-		$params['media'] = new \CurlFile($path);
+		$params = [
+			'query' => $this->config,
+			'multipart' => [
+				[
+					'name'     => 'media',
+					'contents' => fopen($path, 'r'),
+				],
+			]
+		];
 
 		$output = $this->sendRequest('video/check-sync.json', $params);
 
@@ -99,8 +116,8 @@ class Sightengine implements INSFWDetect
 
 	public function detectText($text)
 	{
-		$params = $this->config;
-		$params['text'] = $text;
+		$params['query'] = $this->config;
+		$params['query']['text'] = $text;
 
 		$output = $this->sendRequest('text/check.json', $params);
 
@@ -134,15 +151,20 @@ class Sightengine implements INSFWDetect
 		}
 	}
 
+	// public function sendRequest($uri, $params = [])
+	// {
+	// 	$ch = curl_init('https://api.sightengine.com/1.0/' . $uri);
+	// 	curl_setopt($ch, CURLOPT_POST, true);
+	// 	curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+	// 	curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
+	// 	$response = json_decode(curl_exec($ch), true);
+	// 	curl_close($ch);
+	// 	return $response;
+	// }
+
 	public function sendRequest($uri, $params = [])
 	{
-		$ch = curl_init('https://api.sightengine.com/1.0/' . $uri);
-		curl_setopt($ch, CURLOPT_POST, true);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
-		curl_setopt($ch, CURLOPT_POSTFIELDS, $params);
-		$response = json_decode(curl_exec($ch), true);
-		curl_close($ch);
-
-		return $response;
+		$response = $this->client->request('POST', $uri, $params);
+		return json_decode($response->getBody(), true);
 	}
 }

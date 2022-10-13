@@ -17,7 +17,8 @@
 @switch($result->status)	
 
     @case(false)
-	 The file that you requested is rejected because it contains: {{$result->reason}}
+	 The file that you requested is rejected because it contains {{$result->reason}}
+		@break
 
 	 @default
 	 It has been successfully moderated
